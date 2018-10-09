@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFF94F"
+    >
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:paddingTop="20px"
+        android:text="SELECT DIFFICULTY"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="28sp" />
+
+    <Button
+            android:id="@+id/easyButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Easy"
+            android:textSize="28sp"
+            android:textColor="#000000"
+        />
+
+        <Button
+            android:id="@+id/normalButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Normal"
+            android:textSize="28sp"
+            android:textColor="#000000"
+            />
+
+        <Button
+            android:id="@+id/hardButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Hard"
+            android:textSize="28sp"
+            android:textColor="#000000"
+            />
+    </LinearLayout>
