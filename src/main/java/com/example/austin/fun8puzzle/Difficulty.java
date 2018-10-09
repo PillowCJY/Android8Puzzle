@@ -1,6 +1,7 @@
 package com.example.austin.fun8puzzle;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,12 +29,14 @@ public class Difficulty extends Activity {
         setListener();
     }
 
+    //Setting listeners to different button
     private void setListener(){
 
         easyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectedLevel = DifficultyLevel.easy;
+                startGame();
             }
         });
 
@@ -41,6 +44,7 @@ public class Difficulty extends Activity {
             @Override
             public void onClick(View v) {
                 selectedLevel = DifficultyLevel.normal;
+                startGame();
             }
         });
 
@@ -48,8 +52,16 @@ public class Difficulty extends Activity {
             @Override
             public void onClick(View v) {
                 selectedLevel = DifficultyLevel.hard;
+                startGame();
             }
         });
+    }
+
+    //Start the game
+    private void startGame(){
+        Intent it = new Intent(this, MainActivity.class);
+        it.putExtra("difficulty", selectedLevel);
+        startActivity(it);
     }
 }
 

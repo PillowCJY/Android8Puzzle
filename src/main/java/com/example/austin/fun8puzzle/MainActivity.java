@@ -1,5 +1,6 @@
 package com.example.austin.fun8puzzle;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -28,6 +29,19 @@ public class MainActivity extends Activity {
 
     private GestureDetector gestureDetector;
 
+    final String[] easyLevel = new String[]{
+            "152043786"
+    };
+
+    final String[] normalLevel = new String[]{
+            "152743860"
+    };
+
+    final String[] hardLevel = new String[]{
+            "145802367"
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +59,21 @@ public class MainActivity extends Activity {
 
 
     public void init(){
-        myPuzzle = new Puzzle("145802367");
+        Intent myIntent = getIntent();
+        Difficulty.DifficultyLevel difficultyLevel = (Difficulty.DifficultyLevel) myIntent.getSerializableExtra("difficulty");
+        String initialState = "";
+        switch (difficultyLevel){
+            case easy:
+                initialState = easyLevel[0];
+                break;
+            case normal:
+                initialState = normalLevel[0];
+                break;
+            case hard:
+                initialState = hardLevel[0];
+                break;
+        }
+        myPuzzle = new Puzzle(initialState);
         gameState = myPuzzle;
         setAdapter(new MyAdapter(myPuzzle, this, myGameBoard));
     }
@@ -66,7 +94,7 @@ public class MainActivity extends Activity {
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                init();
+                finish();
             }
         });
 
