@@ -111,6 +111,18 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        myGameBoard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                /*if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
+                    Log.i("getting action down", event.getX()+" "+event.getY());
+                }*/
+                gestureDetector.onTouchEvent(event);
+                return false;
+            }
+        });
+
     }
 
     //Recursive function to handle answer button which will animate the solution

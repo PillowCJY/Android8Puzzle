@@ -2,7 +2,7 @@ package com.example.austin.fun8puzzle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.GridView;
-
+import android.util.Log;
 public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     private MainActivity myActivity;
@@ -16,13 +16,16 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
-    public boolean onDown(MotionEvent e1){
+    public boolean onDown(MotionEvent e){
         return true;
     }
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
 
-        if(e1.getY() - e2.getY() > 50){
+        Log.i("getting event e1", e1.getX() + " " + e1.getY());
+        Log.i("getting event e2", e2.getX() + " " + e2.getY());
+
+        /*if(e1.getY() - e2.getY() > 50){
             //moving up
             if(gameState.canMoveUp()){
                 gameState = gameState.moveUp();
@@ -47,7 +50,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
             }
             return true;
         }
-        myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
-        return false;
+        myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));*/
+        return true;
     }
 }
