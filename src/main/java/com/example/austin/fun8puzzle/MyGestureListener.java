@@ -22,35 +22,37 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
 
-        Log.i("getting event e1", e1.getX() + " " + e1.getY());
-        Log.i("getting event e2", e2.getX() + " " + e2.getY());
 
-        /*if(e1.getY() - e2.getY() > 50){
+
+        if(e1.getY() - e2.getY() > 120){
             //moving up
+            Log.i("getting event e1", e1.getX() + " " + e1.getY());
+            Log.i("getting event e2", e2.getX() + " " + e2.getY());
             if(gameState.canMoveUp()){
                 gameState = gameState.moveUp();
             }
-            return true;
-        } else if (e2.getY() - e1.getY() > 50){
+
+        } else if (e2.getY() - e1.getY() > 120){
             //moving down
             if(gameState.canMoveDown()){
                 gameState = gameState.moveDown();
             }
-            return true;
-        } else if (e1.getX() - e2.getX() > 50){
+
+        } else if (e1.getX() - e2.getX() > 120){
             //moving left
             if(gameState.canMoveLeft()){
                 gameState = gameState.moveLeft();
             }
-            return true;
-        } else if (e2.getX() - e1.getX() > 50){
+
+        } else if (e2.getX() - e1.getX() > 120){
             //moving right
             if(gameState.canMoveRigh()){
                 gameState = gameState.moveRight();
             }
-            return true;
+
         }
-        myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));*/
+        myActivity.setGameState(gameState);
+        myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
         return true;
     }
 }

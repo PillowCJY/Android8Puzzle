@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     private Puzzle gameState;
     private Algorithm algorithm;
 
-    private GridView myGameBoard;
+    private MyGridView myGameBoard;
 
 
 
@@ -53,7 +53,8 @@ public class MainActivity extends Activity {
         hintButton = (Button) findViewById(R.id.hintButton);
         answerButton = (Button) findViewById(R.id.answerButton);
         MyGestureListener listener = new MyGestureListener(this, gameState, myGameBoard);
-        gestureDetector = new GestureDetector(this, listener);
+        myGameBoard.setGestureListener(listener);
+        //gestureDetector = new GestureDetector(this, listener);
         setListeners(this);
     }
 
@@ -106,22 +107,23 @@ public class MainActivity extends Activity {
                 answerButton.setEnabled(false);
                 final Handler handler = new Handler();
                 algorithm = new Algorithm(gameState);
+                setAdapter(new MyAdapter(gameState, act, myGameBoard));
                 solution = algorithm.getSolution();
                 handleAnswerButton(handler, act);
             }
         });
 
 
-        myGameBoard.setOnTouchListener(new View.OnTouchListener() {
+       /* myGameBoard.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 /*if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
                     Log.i("getting action down", event.getX()+" "+event.getY());
-                }*/
+                }
                 gestureDetector.onTouchEvent(event);
                 return false;
             }
-        });
+        });*/
 
     }
 
@@ -144,6 +146,9 @@ public class MainActivity extends Activity {
         }, 500);
     }
 
+    public void setGameState(Puzzle puzzle){
+        gameState = puzzle;
+    }
     public void setAdapter(MyAdapter adp){
         myGameBoard.setAdapter(adp);
     }
