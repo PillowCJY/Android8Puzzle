@@ -23,11 +23,12 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
 
 
+        if(myActivity.isGameStarted()==false){
+            myActivity.startTime();
+        }
 
         if(e1.getY() - e2.getY() > 120){
             //moving up
-            Log.i("getting event e1", e1.getX() + " " + e1.getY());
-            Log.i("getting event e2", e2.getX() + " " + e2.getY());
             if(gameState.canMoveUp()){
                 gameState = gameState.moveUp();
             }
@@ -53,6 +54,9 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         }
         myActivity.setGameState(gameState);
         myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
+        if(gameState.goalMatch()){
+            myActivity.stopTime();
+        }
         return true;
     }
 }

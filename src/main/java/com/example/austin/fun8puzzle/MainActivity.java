@@ -8,6 +8,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.GridView;
 
 public class MainActivity extends Activity {
@@ -24,7 +25,8 @@ public class MainActivity extends Activity {
     private Button restartButton;
     private Button hintButton;
     private Button answerButton;
-
+    private Chronometer timeCount;
+    private boolean isStarted;
     private String solution;
 
     private GestureDetector gestureDetector;
@@ -52,6 +54,8 @@ public class MainActivity extends Activity {
         restartButton = (Button) findViewById(R.id.restartButton);
         hintButton = (Button) findViewById(R.id.hintButton);
         answerButton = (Button) findViewById(R.id.answerButton);
+        timeCount = (Chronometer)findViewById(R.id.timeCount);
+        isStarted = false;
         MyGestureListener listener = new MyGestureListener(this, gameState, myGameBoard);
         myGameBoard.setGestureListener(listener);
         //gestureDetector = new GestureDetector(this, listener);
@@ -83,6 +87,9 @@ public class MainActivity extends Activity {
         hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isGameStarted()){
+                    startTime();
+                }
                 algorithm = new Algorithm(gameState);
                 solution = algorithm.getSolution();
                 if(!solution.equals("")) {
@@ -112,19 +119,6 @@ public class MainActivity extends Activity {
                 handleAnswerButton(handler, act);
             }
         });
-
-
-       /* myGameBoard.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                /*if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
-                    Log.i("getting action down", event.getX()+" "+event.getY());
-                }
-                gestureDetector.onTouchEvent(event);
-                return false;
-            }
-        });*/
-
     }
 
     //Recursive function to handle answer button which will animate the solution
@@ -138,6 +132,7 @@ public class MainActivity extends Activity {
                     handleAnswerButton(handler, act);
                 }
                 else {
+                    stopTime();
                     restartButton.setEnabled(true);
                     hintButton.setEnabled(true);
                     answerButton.setEnabled(true);
@@ -173,4 +168,19 @@ public class MainActivity extends Activity {
                 break;
         }
     }
+
+    public void startTime(){
+        isStarted = true;
+        timeCount.start();
+    }
+
+    public void stopTime(){
+        isStarted = false;
+        timeCount.stop();
+    }
+
+    public boolean isGameStarted(){
+        return isStarted;
+    }
+
 }
