@@ -56,6 +56,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
         if(gameState.goalMatch()){
             myActivity.stopTime();
+            myActivity.goalMatched();
         }
         return true;
     }

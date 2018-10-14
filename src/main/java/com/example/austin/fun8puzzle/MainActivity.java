@@ -1,8 +1,11 @@
 package com.example.austin.fun8puzzle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -20,7 +23,8 @@ public class MainActivity extends Activity {
 
     private MyGridView myGameBoard;
 
-
+    private AlertDialog.Builder builder;
+    private long timeUsed;
 
     private Button restartButton;
     private Button hintButton;
@@ -50,7 +54,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         myGameBoard = findViewById(R.id.gameBoard);
         init();
-
+        builder = new AlertDialog.Builder(this);
         restartButton = (Button) findViewById(R.id.restartButton);
         hintButton = (Button) findViewById(R.id.hintButton);
         answerButton = (Button) findViewById(R.id.answerButton);
@@ -87,14 +91,17 @@ public class MainActivity extends Activity {
         hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isGameStarted()){
-                    startTime();
-                }
                 algorithm = new Algorithm(gameState);
                 solution = algorithm.getSolution();
                 if(!solution.equals("")) {
+                    if(!isGameStarted()){
+                        startTime();
+                    }
                     getNextPuzzle();
                     setAdapter(new MyAdapter(gameState, act, myGameBoard));
+                } else{
+                    stopTime();
+                    goalMatched();
                 }
             }
         });
@@ -133,6 +140,7 @@ public class MainActivity extends Activity {
                 }
                 else {
                     stopTime();
+                    goalMatched();
                     restartButton.setEnabled(true);
                     hintButton.setEnabled(true);
                     answerButton.setEnabled(true);
@@ -171,16 +179,43 @@ public class MainActivity extends Activity {
 
     public void startTime(){
         isStarted = true;
+        timeCount.setBase(SystemClock.elapsedRealtime());
         timeCount.start();
     }
 
     public void stopTime(){
         isStarted = false;
+        timeUsed = SystemClock.elapsedRealtime() - timeCount.getBase();
         timeCount.stop();
+
     }
 
     public boolean isGameStarted(){
         return isStarted;
+    }
+
+    public void goalMatched(){
+        long second = timeUsed / 1000;
+        long mins = (timeUsed / 1000) / 60;
+        if(builder == null) {
+            builder = new AlertDialog.Builder(this);
+            builder.setTitle("Puzzle Solved!");
+            builder.setCancelable(true);
+            builder.setPositiveButton("GOODJOB!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.setNegativeButton("GOODJOB!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+        }
+        builder.setMessage("You solved the puzzle in " + mins + " mins:" + second + " sec" );
+        builder.show();
     }
 
 }
