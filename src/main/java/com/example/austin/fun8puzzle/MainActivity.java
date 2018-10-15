@@ -88,6 +88,8 @@ public class MainActivity extends Activity {
     }
 
     private void setListeners(final Activity act){
+
+        //Bug when click this button and swip again, will go back to the previous state
         hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
