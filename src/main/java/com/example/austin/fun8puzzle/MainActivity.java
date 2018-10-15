@@ -15,6 +15,8 @@ import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.util.Random;
+
 public class MainActivity extends Activity {
 
 
@@ -38,16 +40,17 @@ public class MainActivity extends Activity {
 
     private GestureDetector gestureDetector;
 
+    //Predefined initial states
     final String[] easyLevel = new String[]{
-            "152043786"
+            "152043786", "162043758", "123760548"
     };
 
     final String[] normalLevel = new String[]{
-            "152743860"
+            "152743860", "264507183", "435210786"
     };
 
     final String[] hardLevel = new String[]{
-            "145802367"
+            "145802367", "210435678", "321654078"
     };
 
 
@@ -73,18 +76,22 @@ public class MainActivity extends Activity {
 
 
     public void init(){
+        //Getting the difficulty selected by the user
         Intent myIntent = getIntent();
         Difficulty.DifficultyLevel difficultyLevel = (Difficulty.DifficultyLevel) myIntent.getSerializableExtra("difficulty");
         String initialState = "";
+        //Get a random number
+        Random rand = new Random();
+        int index = rand.nextInt(3) ;
         switch (difficultyLevel){
             case easy:
-                initialState = easyLevel[0];
+                initialState = easyLevel[index];
                 break;
             case normal:
-                initialState = normalLevel[0];
+                initialState = normalLevel[index];
                 break;
             case hard:
-                initialState = hardLevel[0];
+                initialState = hardLevel[index];
                 break;
         }
         myPuzzle = new Puzzle(initialState);
