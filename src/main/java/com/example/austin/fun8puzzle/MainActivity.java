@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -30,6 +31,8 @@ public class MainActivity extends Activity {
     private Button hintButton;
     private Button answerButton;
     private Chronometer timeCount;
+    private TextView stepsCount;
+    private int steps;
     private boolean isStarted;
     private String solution;
 
@@ -59,7 +62,9 @@ public class MainActivity extends Activity {
         hintButton = (Button) findViewById(R.id.hintButton);
         answerButton = (Button) findViewById(R.id.answerButton);
         timeCount = (Chronometer)findViewById(R.id.timeCount);
+        stepsCount = (TextView) findViewById(R.id.steps);
         isStarted = false;
+        steps = 0;
         MyGestureListener listener = new MyGestureListener(this, gameState, myGameBoard);
         myGameBoard.setGestureListener(listener);
         //gestureDetector = new GestureDetector(this, listener);
@@ -89,7 +94,7 @@ public class MainActivity extends Activity {
 
     private void setListeners(final Activity act){
 
-        //Bug when click this button and swip again, will go back to the previous state
+
         hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +106,7 @@ public class MainActivity extends Activity {
                     }
                     getNextPuzzle();
                     setAdapter(new MyAdapter(gameState, act, myGameBoard));
+                    stepIncrease();
                 } else{
                     stopTime();
                     goalMatched();
@@ -138,14 +144,13 @@ public class MainActivity extends Activity {
                 if(!solution.equals("")) {
                     getNextPuzzle();
                     setAdapter(new MyAdapter(gameState, act, myGameBoard));
+                    stepIncrease();
                     handleAnswerButton(handler, act);
                 }
                 else {
                     stopTime();
                     goalMatched();
                     restartButton.setEnabled(true);
-                    hintButton.setEnabled(true);
-                    answerButton.setEnabled(true);
                 }
             }
         }, 500);
@@ -153,6 +158,14 @@ public class MainActivity extends Activity {
 
     public void setGameState(Puzzle puzzle){
         gameState = puzzle;
+    }
+
+    public void stepIncrease(){
+        steps++;
+        stepsCount.setText(Integer.toString(steps));
+    }
+    public Puzzle getGameState(){
+        return gameState;
     }
     public void setAdapter(MyAdapter adp){
         myGameBoard.setAdapter(adp);
@@ -197,6 +210,8 @@ public class MainActivity extends Activity {
     }
 
     public void goalMatched(){
+        hintButton.setEnabled(false);
+        answerButton.setEnabled(false);
         long second = timeUsed / 1000;
         long mins = (timeUsed / 1000) / 60;
         if(builder == null) {

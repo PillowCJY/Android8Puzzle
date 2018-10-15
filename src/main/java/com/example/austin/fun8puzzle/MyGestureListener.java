@@ -27,6 +27,8 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
             myActivity.startTime();
         }
 
+        gameState = myActivity.getGameState();
+
         if(e1.getY() - e2.getY() > 120){
             //moving up
             if(gameState.canMoveUp()){
@@ -54,6 +56,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         }
         myActivity.setGameState(gameState);
         myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
+        myActivity.stepIncrease();
         if(gameState.goalMatch()){
             myActivity.stopTime();
             myActivity.goalMatched();
