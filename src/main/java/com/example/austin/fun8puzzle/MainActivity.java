@@ -6,51 +6,61 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.GridView;
 import android.widget.TextView;
-
 import java.util.Random;
 
+/**
+ * This is a puzzle game made by Junyi Chen
+ * the game board is a 3*3 grids. Each tile contains a unique number from 1-8 and a blank tile with nothing.
+ * user will be swiping the screen to move the blank tile up down left right in order to solve the puzzle with order shown below
+ *              [1 2 3]
+ *              [4 5 6]
+ *              [7 8  ]
+ * the time will start counting once user first swipe the screen
+ * steps will be counted
+ * hint button is used to show user next move to the solution
+ * answer button will animate the best solution(lowest steps count)
+ * Users are allowed to select difficulty level, different level will contain different states.
+ */
 public class MainActivity extends Activity {
 
 
-    private Puzzle myPuzzle;
-    private Puzzle gameState;
-    private Algorithm algorithm;
+    //private Puzzle myPuzzle;
+    private Puzzle gameState;//current state of the game
+    private Algorithm algorithm; //Algorithm object which will implement A* algorithm to get solution
 
-    private MyGridView myGameBoard;
+    private MyGridView myGameBoard; //Gridview used to gameboard
 
-    private AlertDialog.Builder builder;
-    private long timeUsed;
+    private AlertDialog.Builder builder; //AlertDialog when the game is finished
+    private long timeUsed;  //used to count how long it took to finished the game
+    private int steps; //used to count how many steps user used
 
-    private Button restartButton;
-    private Button hintButton;
-    private Button answerButton;
-    private Chronometer timeCount;
-    private TextView stepsCount;
-    private int steps;
-    private boolean isStarted;
-    private String solution;
+    private Button restartButton; //button will restart the game when click it
+    private Button hintButton; //button will show user next move to the solution
+    private Button answerButton; //button will animate the solution
+    private Chronometer timeCount; //Chronometer used to count up the time
+    private TextView stepsCount; //Textview used to show the steps used
 
-    private GestureDetector gestureDetector;
+    private boolean isStarted; //a boolean variable to check wether the game is started or not
+    private String solution; //Solution, U - means move the blank tile U, D - move Down, L - move left R - move right
+
+    private GestureDetector gestureDetector; //My own gesture detector for the game board swipe detection
 
     //Predefined initial states
     final String[] easyLevel = new String[]{
-            "152043786", "162043758", "123760548"
+            "152043786", "162043758", "123760548", "235140786"
     };
 
     final String[] normalLevel = new String[]{
-            "152743860", "264507183", "435210786"
+            "152743860", "264507183", "435210786", "325406718",
     };
 
     final String[] hardLevel = new String[]{
-            "145802367", "210435678", "321654078"
+            "145802367", "210435678", "321654078", "218407635"
     };
 
 
@@ -70,7 +80,6 @@ public class MainActivity extends Activity {
         steps = 0;
         MyGestureListener listener = new MyGestureListener(this, gameState, myGameBoard);
         myGameBoard.setGestureListener(listener);
-        //gestureDetector = new GestureDetector(this, listener);
         setListeners(this);
     }
 
@@ -82,7 +91,7 @@ public class MainActivity extends Activity {
         String initialState = "";
         //Get a random number
         Random rand = new Random();
-        int index = rand.nextInt(3) ;
+        int index = rand.nextInt(4) ;
         switch (difficultyLevel){
             case easy:
                 initialState = easyLevel[index];
@@ -94,9 +103,9 @@ public class MainActivity extends Activity {
                 initialState = hardLevel[index];
                 break;
         }
-        myPuzzle = new Puzzle(initialState);
-        gameState = myPuzzle;
-        setAdapter(new MyAdapter(myPuzzle, this, myGameBoard));
+        gameState = new Puzzle(initialState);
+        //gameState = myPuzzle;
+        setAdapter(new MyAdapter(gameState, this, myGameBoard));
     }
 
     private void setListeners(final Activity act){
