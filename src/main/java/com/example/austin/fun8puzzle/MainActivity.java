@@ -14,7 +14,8 @@ import android.widget.TextView;
 import java.util.Random;
 
 /**
- * This is a puzzle game made by Junyi Chen
+ * This is a puzzle game made by
+ * @author Junyi Chen
  * the game board is a 3*3 grids. Each tile contains a unique number from 1-8 and a blank tile with nothing.
  * user will be swiping the screen to move the blank tile up down left right in order to solve the puzzle with order shown below
  *              [1 2 3]
@@ -29,7 +30,6 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
 
-    //private Puzzle myPuzzle;
     private Puzzle gameState;//current state of the game
     private Algorithm algorithm; //Algorithm object which will implement A* algorithm to get solution
 
@@ -78,12 +78,13 @@ public class MainActivity extends Activity {
         stepsCount = (TextView) findViewById(R.id.steps);
         isStarted = false;
         steps = 0;
+        //instantiate my own gesture listener and set it to my adapter view
         MyGestureListener listener = new MyGestureListener(this, gameState, myGameBoard);
         myGameBoard.setGestureListener(listener);
         setListeners(this);
     }
 
-
+    //This method will initialise the intial state according to the level user selected.
     public void init(){
         //Getting the difficulty selected by the user
         Intent myIntent = getIntent();
@@ -103,50 +104,65 @@ public class MainActivity extends Activity {
                 initialState = hardLevel[index];
                 break;
         }
+        //Instaintating new instance of Puzzle object.
         gameState = new Puzzle(initialState);
-        //gameState = myPuzzle;
         setAdapter(new MyAdapter(gameState, this, myGameBoard));
     }
 
+    //this method will set listeners to all views except gridview
     private void setListeners(final Activity act){
 
-
+        //setting listener to hint button
         hintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //instantiating a new algorithm object, pass the current game state to it and get the solution
                 algorithm = new Algorithm(gameState);
                 solution = algorithm.getSolution();
+
+                //has solution
                 if(!solution.equals("")) {
                     if(!isGameStarted()){
+                        //game isnt started, start counting up the time
                         startTime();
                     }
+                    //get the next state according to the solution
                     getNextPuzzle();
+                    //redraw the gameboard
                     setAdapter(new MyAdapter(gameState, act, myGameBoard));
+                    //increase the step by one
                     stepIncrease();
                 } else{
+                    //goal matched, stop counting the time and show user the time used.
                     stopTime();
                     goalMatched();
                 }
             }
         });
 
+        //setting listener to restart button
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //simple finish the current activity, which will go back to the select level activity
                 finish();
             }
         });
 
+        //setting listener to answer button
         answerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //disable all buttons as animation will be running
                 restartButton.setEnabled(false);
                 hintButton.setEnabled(false);
                 answerButton.setEnabled(false);
+                //handler to pose delay
                 final Handler handler = new Handler();
+                //getting solution
                 algorithm = new Algorithm(gameState);
-                setAdapter(new MyAdapter(gameState, act, myGameBoard));
                 solution = algorithm.getSolution();
+                //handle the animation
                 handleAnswerButton(handler, act);
             }
         });
@@ -157,36 +173,51 @@ public class MainActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                //while the puzzle is not solved
                 if(!solution.equals("")) {
+                    //get next state according to the solution
                     getNextPuzzle();
+                    //redraw the gameboard
                     setAdapter(new MyAdapter(gameState, act, myGameBoard));
+                    //increase the step
                     stepIncrease();
+                    //recursive called until the solution is finished
                     handleAnswerButton(handler, act);
                 }
+                //puzzle is solved
                 else {
+                    //stop timing
                     stopTime();
                     goalMatched();
+                    //enable restart button
                     restartButton.setEnabled(true);
                 }
             }
         }, 500);
     }
 
+    //setter
     public void setGameState(Puzzle puzzle){
         gameState = puzzle;
     }
 
+    //getter
+    public Puzzle getGameState(){
+        return gameState;
+    }
+
+    //this method will increase the steps and display it
     public void stepIncrease(){
         steps++;
         stepsCount.setText(Integer.toString(steps));
     }
-    public Puzzle getGameState(){
-        return gameState;
-    }
+
+    //this method will set a new adpater to the gridview
     public void setAdapter(MyAdapter adp){
         myGameBoard.setAdapter(adp);
     }
 
+    //this method will set game state to next best move according to the solution
     private void getNextPuzzle(){
         Character chr = solution.charAt(0);
         solution = solution.substring(1);
@@ -208,12 +239,14 @@ public class MainActivity extends Activity {
         }
     }
 
+    //start timing
     public void startTime(){
         isStarted = true;
         timeCount.setBase(SystemClock.elapsedRealtime());
         timeCount.start();
     }
 
+    //stop timing
     public void stopTime(){
         isStarted = false;
         timeUsed = SystemClock.elapsedRealtime() - timeCount.getBase();
@@ -221,10 +254,13 @@ public class MainActivity extends Activity {
 
     }
 
+    //getter
     public boolean isGameStarted(){
         return isStarted;
     }
 
+    //this method will be called when the game is finished(goal matched)
+    //it will calculate the time used to solve the puzzle and display it via alertdialog
     public void goalMatched(){
         hintButton.setEnabled(false);
         answerButton.setEnabled(false);
@@ -234,20 +270,20 @@ public class MainActivity extends Activity {
             builder = new AlertDialog.Builder(this);
             builder.setTitle("Puzzle Solved!");
             builder.setCancelable(true);
-            builder.setPositiveButton("GOODJOB!", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("GOOD JOB", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }
             });
-            builder.setNegativeButton("GOODJOB!", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }
             });
         }
-        builder.setMessage("You solved the puzzle in " + mins + " mins:" + second + " sec" );
+        builder.setMessage("You solved the puzzle in\n" + mins + " mins:" + second + " sec" );
         builder.show();
     }
 

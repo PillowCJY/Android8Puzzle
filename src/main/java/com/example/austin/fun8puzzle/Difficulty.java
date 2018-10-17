@@ -6,13 +6,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ *  This activity is the launcher and the main activity which enable users to select difficulty
+ *  @author Junyi Chen
+ */
 public class Difficulty extends Activity {
 
 
-    Button easyButton;
-    Button normalButton;
-    Button hardButton;
+    Button easyButton; //Easy Level
+    Button normalButton; //Normal Level
+    Button hardButton; //Hard Level
 
+    //Enum type
     enum DifficultyLevel{
         easy, normal, hard
     }
@@ -59,7 +64,9 @@ public class Difficulty extends Activity {
 
     //Start the game
     private void startGame(){
+        //Create a intent which will start the game activity
         Intent it = new Intent(this, MainActivity.class);
+        //passing difficulty selected by user to the game activity which the game state will be initialised according to this level
         it.putExtra("difficulty", selectedLevel);
         startActivity(it);
     }

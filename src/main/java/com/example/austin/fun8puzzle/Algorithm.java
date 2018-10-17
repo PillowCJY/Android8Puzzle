@@ -1,23 +1,27 @@
 package com.example.austin.fun8puzzle;
 
-import android.app.Activity;
-import android.widget.Toast;
-
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+/**
+ *  This class will implement A* Algorithm to search from a state to the goal state
+ *  @author Junyi Chen
+ */
 public class Algorithm {
 
-    private PriorityQueue<Puzzle> myHeap;
-    private HashSet<Integer> visitedList;
-    private Puzzle initialPuzzle;
 
+    private PriorityQueue<Puzzle> myHeap; //Priority Queue
+    private HashSet<Integer> visitedList; //visited list
+    private Puzzle initialPuzzle; //initial state
+
+    //Constructor
     public Algorithm (Puzzle initial){
         initialPuzzle = initial;
         myHeap = new PriorityQueue<>();
         visitedList = new HashSet<>();
     }
 
+    //this method will return a solution if one exists
     public String getSolution(){
         initialPuzzle = new Puzzle(initialPuzzle.toString());
         Puzzle temp = implementAlgorithm();
@@ -28,6 +32,7 @@ public class Algorithm {
         }
     }
 
+    //this method will implement the A* Algorithm
     private Puzzle implementAlgorithm(){
 
         myHeap.add(initialPuzzle);

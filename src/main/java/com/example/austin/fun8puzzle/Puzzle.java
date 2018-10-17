@@ -2,19 +2,29 @@ package com.example.austin.fun8puzzle;
 
 import java.util.HashSet;
 
+/**
+ *  This class will contain the state of the game
+ *  @author Junyi Chen
+ */
 public class Puzzle implements Comparable<Puzzle> {
 
+    //game board 3 * 3 grid
     public int[][] gameBoard = new int[3][3];
+    //final goal
     private int[][] goalBoard = new int[3][3];
+    //final goad in integer representation
     private int goalState;
+    //index of the blank tile
     public int blankX;
     public int blankY;
+    //this is the solution
     private String pathToSolution;
+    //this is the G cost which will be used for the A* Algorithm
     public int pathLength;
-
+    //hashset to remember previous states, used to prevent local loops
     private HashSet<Integer> previousState = new HashSet<>();
 
-
+    //constructor
     public Puzzle(String initialState){
 
         pathLength = 0;
@@ -39,6 +49,7 @@ public class Puzzle implements Comparable<Puzzle> {
         }
     }
 
+    //Copy constructor
     private Puzzle(Puzzle cpyPuzzle){
 
         goalBoard[0] = new int[]{1,2,3};
@@ -60,6 +71,7 @@ public class Puzzle implements Comparable<Puzzle> {
         pathLength = cpyPuzzle.pathLength + 1;
     }
 
+    //this method is used to check if current state matches the goal state
     public boolean goalMatch(){
         boolean result=true;
         for (int i = 0; i < 3; i++) {
@@ -73,6 +85,7 @@ public class Puzzle implements Comparable<Puzzle> {
         return result;
     }
 
+    //get the string representation of the game state
     public String toString(){
         StringBuilder state = new StringBuilder("");
         for(int i = 0; i < 3 ; i++){
@@ -83,6 +96,7 @@ public class Puzzle implements Comparable<Puzzle> {
         return state.toString();
     }
 
+    //get the integer representation of the game state
     public int toNumber() {
         int num = 0;
         for (int i = 0; i < 3;i++) {
@@ -93,16 +107,19 @@ public class Puzzle implements Comparable<Puzzle> {
         return num;
     }
 
+    //get the previous states
     public HashSet<Integer> getPreviousState(){
         return previousState;
     }
 
+    //set the previous states
     public void setPreviousState(HashSet<Integer> set)
     {
         previousState = new HashSet<>(set);
         previousState.add(toNumber());
     }
 
+    //check if a state is local loop
     public boolean isLocalLoop(int state){
         if(previousState.contains(state)){
             return true;
@@ -111,6 +128,7 @@ public class Puzzle implements Comparable<Puzzle> {
         }
     }
 
+    //setters
     public void setBlankX(int x){
         blankX = x;
     }
@@ -119,14 +137,17 @@ public class Puzzle implements Comparable<Puzzle> {
         blankY = y;
     }
 
+    //add solution to the solution path
     public void addSolutionPath(String direction){
         pathToSolution += direction;
     }
 
+    //get the solution path
     public String getPathToSolution(){
         return pathToSolution;
     }
 
+    //check if current state can move to a position
     public boolean canMoveUp(){
         return (blankY > 0);
     }
@@ -143,6 +164,7 @@ public class Puzzle implements Comparable<Puzzle> {
         return (blankX < 2);
     }
 
+    //Move the current state
     public Puzzle moveUp(){
 
         if(blankY > 0){
@@ -197,10 +219,12 @@ public class Puzzle implements Comparable<Puzzle> {
        }
     }
 
+    //get the heursitic value, used for A* Algorithm
     public int getHCost(){
         return findManhattan() + pathLength;
     }
 
+    //find the Manhattan value, used for A* Algorithm
     public int findManhattan(){
         int sum = 0;
 
@@ -243,7 +267,7 @@ public class Puzzle implements Comparable<Puzzle> {
         return difference;
     }
 
-
+    //used for A* algorithm, as this object will be saved and compared inside priority queue
     @Override
     public int compareTo(Puzzle o) {
         return this.getHCost() - o.getHCost();

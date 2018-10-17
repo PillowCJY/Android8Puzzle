@@ -2,13 +2,18 @@ package com.example.austin.fun8puzzle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.GridView;
-import android.util.Log;
+
+/**
+ *  My own gesturelistener which is used to detect user swiping
+ *  @author Junyi Chen
+ */
 public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
-    private MainActivity myActivity;
-    private Puzzle gameState;
-    private GridView myGameBoard;
+    private MainActivity myActivity;//game activity
+    private Puzzle gameState; //current game state
+    private GridView myGameBoard; //game board within game activity
 
+    //constructor
     public MyGestureListener(MainActivity act, Puzzle state, GridView grid){
         myActivity = act;
         gameState = state;
@@ -54,9 +59,13 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
             }
 
         }
+        //set the new state back to activity
         myActivity.setGameState(gameState);
+        //redraw the game board
         myActivity.setAdapter(new MyAdapter(gameState, myActivity, myGameBoard));
+        //increase the step by one
         myActivity.stepIncrease();
+        //check if goal matching
         if(gameState.goalMatch()){
             myActivity.stopTime();
             myActivity.goalMatched();
